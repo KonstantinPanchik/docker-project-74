@@ -1,0 +1,36 @@
+name: CI/CD for Docker Push
+
+on:
+  push:
+    branches:
+      - main
+      
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    
+    env:
+      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+      DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+      
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Set up Docker
+      uses: docker/setup-buildx-action@v2
+    
+    - name: Log in to Docker Hub
+      run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
+      
+    - name: Build and run tests using Docker Compose
+      run: |
+        docker-compose up --build --abort-on-container-exit --exit-code-from test
+    
+    - name: Build production Docker image
+      run: |
+        docker build -f Dockerfile.production -t $DOCKER_HUB_USERNAME/docker-project-74:latest .
+    
+    - name: Push image to Docker Hub
+      run: |
+        docker push $DOCKER_HUB_USERNAME/docker-project-74:latest
