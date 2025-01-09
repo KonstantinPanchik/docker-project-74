@@ -1,6 +1,6 @@
 # My Project
 
-![CI/CD](https://github.com/KonstantinPanchik/docker-project-74/.github/workflows/push.yml/badge.svg?branch=main)
+![CI/CD](https://github.com/KonstantinPanchik/docker-project-74/actions/workflows/push.yml/badge.svg?branch=main)
 
 # Automatic tests
 
